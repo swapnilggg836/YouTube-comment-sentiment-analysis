@@ -1,0 +1,189 @@
+"""
+"use client";
+import { useState } from "react";
+import { FaSignOutAlt, FaEllipsisV, FaUserCircle } from "react-icons/fa";
+import { FiSearch } from "react-icons/fi";
+import classNames from "classnames";
+
+const navLinks = [
+  "Dashboard",
+  "Orders",
+  "Post Data",
+  "Product",
+  "Contacts",
+  "Video",
+  "Company Address",
+  "Other Fields",
+];
+
+export default function AdminPanel() {
+  const [activePage, setActivePage] = useState<string>("Dashboard");
+  const [profileDropdown, setProfileDropdown] = useState<boolean>(false);
+  const [navDropdown, setNavDropdown] = useState<boolean>(false);
+
+  const handleLogout = (): void => {
+    console.log("Logged out");
+  };
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch("", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+      alert(result.message);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred while submitting the form.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {/* Top Navbar */}
+      <div className="flex justify-between items-center p-4 bg-white shadow-md fixed top-0 left-0 right-0 z-10">
+        <div className="text-2xl font-bold text-indigo-600">Dwarkadhish Paithani</div>
+        <div className="flex items-center gap-4 relative">
+          <FiSearch className="text-xl cursor-pointer hidden sm:block" />
+          <FaEllipsisV
+            className="text-xl cursor-pointer block sm:hidden"
+            onClick={() => setNavDropdown(!navDropdown)}
+          />
+          {navDropdown && (
+            <div className="absolute right-10 top-10 bg-white shadow-md rounded-lg p-2 z-20 w-40 sm:hidden">
+              {navLinks.map((link) => (
+                <p
+                  key={link}
+                  onClick={() => setActivePage(link)}
+                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                >
+                  {link}
+                </p>
+              ))}
+            </div>
+          )}
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => setProfileDropdown(!profileDropdown)}
+          >
+            <FaUserCircle className="text-2xl" />
+            <span className="hidden sm:block">Admin</span>
+          </div>
+          {profileDropdown && (
+            <div className="absolute right-0 top-14 bg-white shadow-md rounded-lg p-4 z-20 w-48">
+              <p className="p-2 hover:bg-gray-100 cursor-pointer">Edit Profile</p>
+              <p className="p-2 hover:bg-gray-100 cursor-pointer">Settings</p>
+              <p className="p-2 hover:bg-gray-100 cursor-pointer">Notifications</p>
+              <p className="p-2 hover:bg-gray-100 cursor-pointer">Help</p>
+              <p
+                className="p-2 hover:bg-red-100 cursor-pointer text-red-600 flex items-center gap-2 logout"
+                onClick={handleLogout}
+              >
+                <FaSignOutAlt /> Logout
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Sidebar */}
+      <div className="hidden sm:block fixed top-16 left-0 w-60 h-full bg-white shadow-lg p-4">
+        {navLinks.map((link) => (
+          <p
+            key={link}
+            onClick={() => setActivePage(link)}
+            className={classNames(
+              "p-3 rounded-lg cursor-pointer hover:bg-indigo-100",
+              activePage === link && "bg-indigo-200 font-semibold"
+            )}
+          >
+            {link}
+          </p>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div className="pt-20 sm:ml-60 p-6">
+        <h1 className="text-3xl font-bold mb-4 text-indigo-700">{activePage}</h1>
+        <div className="bg-white p-6 shadow-md rounded-xl min-h-[60vh]">
+          {activePage === "Post Data" && (
+            <form
+              className="space-y-4 bg-white p-6 rounded-xl shadow-md"
+              onSubmit={handleSubmit}
+              encType="multipart/form-data"
+            >
+              <label className="block">
+                Product Name:
+                <input
+                  type="text"
+                  name="name"
+                  className="block w-full p-2 border rounded"
+                  required
+                />
+              </label>
+              <label className="block">
+                Upload up to 10 Images:
+                <input
+                  type="file"
+                  name="images"
+                  multiple
+                  accept="image/*"
+                  className="block w-full p-2 border rounded"
+                  required
+                />
+              </label>
+              <label className="block">
+                Actual Price:
+                <input
+                  type="number"
+                  name="actualPrice"
+                  className="block w-full p-2 border rounded"
+                  required
+                />
+              </label>
+              <label className="block">
+                Discount Price:
+                <input
+                  type="number"
+                  name="discountPrice"
+                  className="block w-full p-2 border rounded"
+                  required
+                />
+              </label>
+              <label className="block">
+                Description:
+                <textarea
+                  name="description"
+                  className="block w-full p-2 border rounded"
+                  required
+                />
+              </label>
+              <label className="block">
+                Video URL:
+                <input
+                  type="text"
+                  name="video"
+                  className="block w-full p-2 border rounded"
+                />
+              </label>
+              <button
+                type="submit"
+                className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+              >
+                Submit
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+} """ i have the admin pannel code and constur for above file structure now i give you some itructoin  apply for this style and post to backend and fetch data in my the 1.dashboard conytent user count,product count ,expensive product count , contents and fectch from the database 2.orders in orders check order,and in that confirm order and reject order and see user detail who can give order and check proudut which can be order by its uniue id when click on it it display its iffomation which store in product and call in products and also location and etc field 3.product in that see all product,and apply filter from saree name and saree price and oyther 2 to 3 field all product display 3post data in that in form get data from code and addition is saree status avelabel or not avalable and etc filed according to you and aslo importan give produt id from you give id number from 1 to 10000 chose any number from it 4.mange product in that the for above when i post data that all table colum and data can be changebal when i pase id of product the product will be display   and any field can be change 5.add vedio and photos and also view vedio mens disply on it 6.contact display the contacs who can be visite the website and also if admin view then mark view and delete and contack opetion will be display 7 and also add field that the shop name and othe some tye of info added 8 other field give me code and also explain how to connect mongodb use inline css and give code
